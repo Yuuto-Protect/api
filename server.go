@@ -58,6 +58,8 @@ func main() {
 	r.Use(auth)
 	{
 		r.POST("/subscription/checkout", routes.SubscriptionCheckout)
+
+		r.POST("/manage/:botId/:guildId/autorole", routes.ManageGuildAutoRoles)
 	}
 
 	r.TrustedPlatform = gin.PlatformCloudflare
