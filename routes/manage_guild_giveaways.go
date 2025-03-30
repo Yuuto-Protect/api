@@ -16,7 +16,7 @@ func DeleteGiveaway(c *gin.Context) {
 	db := utils.DbConnect()
 	giveaway := db.Where(models.Giveaways{MessageId: giveawayId, GuildId: guildId})
 	if errors.Is(giveaway.Error, gorm.ErrRecordNotFound) {
-		c.JSON(404, gin.H{"error": "Unknown giveaway"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Unknown giveaway"})
 	}
 
 	c.Writer.WriteHeader(http.StatusNoContent)

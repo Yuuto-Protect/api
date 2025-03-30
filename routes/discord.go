@@ -71,9 +71,7 @@ func DiscordCallback(c *gin.Context) {
 		ToJSON(&userResp).
 		Fetch(context.Background())
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to fetch user info",
-		})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to fetch user info"})
 		return
 	}
 
@@ -84,9 +82,7 @@ func DiscordCallback(c *gin.Context) {
 	})
 	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Internal Server Error",
-		})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
 		return
 	}
 
