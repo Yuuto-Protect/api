@@ -1,16 +1,13 @@
 package routes
 
 import (
+	"api/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/stripe/stripe-go/v81"
 	"github.com/stripe/stripe-go/v81/checkout/session"
 	"os"
 )
-
-var plans = map[string]string{
-	"premium": os.Getenv("STRIPE_PREMIUM_PLAN_ID"),
-}
 
 type SubscriptionCheckoutBody struct {
 	Plan string `json:"plan" binding:"required"`
@@ -19,6 +16,10 @@ type SubscriptionCheckoutBody struct {
 }
 
 func SubscriptionCheckout(c *gin.Context) {
+	plans := map[string]string{
+		"premium": os.Getenv("STRIPE_PREMIUM_PLAN_ID"),
+	}
+
 	var body SubscriptionCheckoutBody
 	err := c.BindJSON(&body)
 	if err != nil {
@@ -34,21 +35,23 @@ func SubscriptionCheckout(c *gin.Context) {
 	}
 
 	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
+	user := c.MustGet("user").(utils.User)
 
 	// Create a new Stripe Checkout checkoutSession
 	params := &stripe.CheckoutSessionParams{
 		Mode:       stripe.String(string(stripe.CheckoutSessionModeSubscription)),
-		SuccessURL: stripe.String("https://bots.yuuto.dev/success"),
-		CancelURL:  stripe.String("https://bots.yuuto.dev/cancel"),
+		SuccessURL: stripe.String("https://bots.yuuto.dev/checkout/success"),
+		CancelURL:  stripe.String("https://bots.yuuto.dev/"),
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 			{
 				Price:    stripe.String(planID),
 				Quantity: stripe.Int64(1),
 			},
 		},
-		CustomerEmail: stripe.String(""),
+		CustomerEmail: stripe.String(user.Email),
 		Metadata: map[string]string{
-			"discord_token": body.Token,
+			"discord_token":   body.Token,
+			"discord_user_id": user.Id,
 		},
 	}
 	checkoutSession, err := session.New(params)
