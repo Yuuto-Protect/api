@@ -60,6 +60,8 @@ func main() {
 		r.POST("/subscription/checkout", routes.SubscriptionCheckout)
 
 		r.POST("/manage/:botId/:guildId/autorole", routes.ManageGuildAutoRoles)
+
+		r.DELETE("/manage/:botId/:guildId/giveaways/:giveawayId", routes.DeleteGiveaway)
 	}
 
 	r.TrustedPlatform = gin.PlatformCloudflare
