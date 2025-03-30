@@ -29,6 +29,14 @@ func auth(c *gin.Context) {
 		}
 		return []byte(secret), nil
 	})
+
+	// If there was an error during JWT parsing
+	if err != nil {
+		c.JSON(401, gin.H{"error": "Unauthorized"})
+		c.Abort()
+		return
+	}
+
 	user.Id = claims["id"].(string)
 	user.Email = claims["email"].(string)
 	user.Username = claims["username"].(string)
