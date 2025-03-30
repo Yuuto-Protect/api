@@ -14,7 +14,10 @@ func main() {
 	}
 
 	r := gin.Default()
+
 	r.GET("/discord/callback", routes.DiscordCallback)
+
+	r.POST("/subscription/checkout", routes.SubscriptionCheckout)
 
 	r.TrustedPlatform = gin.PlatformCloudflare
 	r.Run()
