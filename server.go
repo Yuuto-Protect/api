@@ -58,6 +58,7 @@ func main() {
 	r.Use(auth)
 	{
 		r.POST("/subscription/checkout", routes.SubscriptionCheckout)
+		r.POST("/webhooks/stripe", routes.StripeWebhook)
 
 		r.POST("/manage/:botId/:guildId/autorole", routes.ManageGuildAutoRoles)
 
