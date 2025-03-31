@@ -5,6 +5,8 @@ go 1.24
 require (
 	github.com/carlmjohnson/requests v0.24.3
 	github.com/docker/docker v28.0.4+incompatible
+	github.com/getsentry/sentry-go v0.31.1
+	github.com/getsentry/sentry-go/gin v0.31.1
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/google/uuid v1.6.0
