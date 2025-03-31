@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"github.com/carlmjohnson/requests"
+	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"net/http"
@@ -22,6 +23,7 @@ type DiscordUserResponse struct {
 }
 
 func DiscordCallback(c *gin.Context) {
+	hub := sentrygin.GetHubFromContext(c)
 	code := c.Query("code")
 	if code == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -58,9 +60,8 @@ func DiscordCallback(c *gin.Context) {
 		ToJSON(&tokenResp).
 		Fetch(context.Background())
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to get an OAuth2 token",
-		})
+		hub.CaptureException(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to get an OAuth2 token"})
 		return
 	}
 
