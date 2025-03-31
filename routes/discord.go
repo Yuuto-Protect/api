@@ -3,7 +3,6 @@ package routes
 import (
 	"context"
 	"encoding/base64"
-	"fmt"
 	"github.com/carlmjohnson/requests"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
@@ -48,22 +47,21 @@ func DiscordCallback(c *gin.Context) {
 	clientSecret := os.Getenv("DISCORD_CLIENT_SECRET")
 	redirectUri := os.Getenv("DISCORD_REDIRECT_URI")
 	body := url.Values{}
-	body.Set("client_id", clientId)
-	body.Set("client_secret", clientSecret)
 	body.Set("code", code)
 	body.Set("grant_type", "authorization_code")
 	body.Set("redirect_uri", redirectUri)
 
 	var tokenResp OAuth2TokenResponse
 	err = requests.
-		URL("https://discord.com/api/v10/oauth2/token").
+		URL("https://discord.com/api/oauth2/token").
 		ContentType("application/x-www-form-urlencoded").
+		BasicAuth(clientId, clientSecret).
 		BodyForm(body).
 		ToJSON(&tokenResp).
 		Fetch(context.Background())
 	if err != nil {
 		hub.CaptureException(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Failed to get an OAuth2 token: %s", tokenResp.Message)})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to get an OAuth2 token"})
 		return
 	}
 
