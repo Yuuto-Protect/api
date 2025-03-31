@@ -52,6 +52,7 @@ func DiscordCallback(c *gin.Context) {
 	body.Set("redirect_uri", redirectUri)
 
 	var tokenResp OAuth2TokenResponse
+	var errorResp string
 	err = requests.
 		URL("https://discord.com/api/oauth2/token").
 		ContentType("application/x-www-form-urlencoded").
@@ -61,7 +62,7 @@ func DiscordCallback(c *gin.Context) {
 		AddValidator(func(res *http.Response) error {
 			err := requests.CheckStatus(http.StatusOK)(res)
 			if requests.HasStatusErr(err, http.StatusBadRequest) {
-				if copyErr := requests.ToJSON(&tokenResp)(res); copyErr != nil {
+				if copyErr := requests.ToString(&errorResp)(res); copyErr != nil {
 					return copyErr
 				}
 			}
@@ -69,9 +70,9 @@ func DiscordCallback(c *gin.Context) {
 		}).
 		Fetch(context.Background())
 	if err != nil {
-		log.Println(tokenResp)
+		log.Println(errorResp)
 		hub.CaptureException(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Failed to get an OAuth2 token: %s", tokenResp.ErrorDescription)})
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Failed to get an OAuth2 token: %s", errorResp)})
 		return
 	}
 
