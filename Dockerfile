@@ -15,4 +15,4 @@ COPY --from=builder /app/api .
 
 EXPOSE 8080
 
-CMD ["./main"]
+CMD ["./api"]
