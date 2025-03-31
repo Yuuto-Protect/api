@@ -4,12 +4,12 @@ import (
 	"api/routes"
 	"api/utils"
 	"errors"
-	"fmt"
 	"github.com/getsentry/sentry-go"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
+	"log"
 	"os"
 )
 
@@ -49,14 +49,18 @@ func auth(c *gin.Context) {
 func main() {
 	godotenv.Load()
 
-	err := sentry.Init(sentry.ClientOptions{Dsn: os.Getenv("SENTRY_DSN")})
+	r := gin.Default()
+
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn:         os.Getenv("SENTRY_DSN"),
+		Environment: gin.Mode(),
+	})
 	if err != nil {
-		fmt.Printf("Sentry initialization failed: %v\n", err)
+		log.Printf("Sentry initialization failed: %v", err)
 	} else {
-		fmt.Printf("Sentry loaded")
+		log.Printf("Sentry loaded. DSN: %s", os.Getenv("SENTRY_DSN"))
 	}
 
-	r := gin.Default()
 	r.Use(sentrygin.New(sentrygin.Options{
 		WaitForDelivery: false,
 	}))
