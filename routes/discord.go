@@ -3,6 +3,7 @@ package routes
 import (
 	"context"
 	"encoding/base64"
+	"fmt"
 	"github.com/carlmjohnson/requests"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,7 @@ import (
 
 type OAuth2TokenResponse struct {
 	AccessToken string `json:"access_token"`
+	Message     string `json:"message"`
 }
 
 type DiscordUserResponse struct {
@@ -61,7 +63,7 @@ func DiscordCallback(c *gin.Context) {
 		Fetch(context.Background())
 	if err != nil {
 		hub.CaptureException(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to get an OAuth2 token"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Failed to get an OAuth2 token: %s", tokenResp.Message)})
 		return
 	}
 

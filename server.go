@@ -50,7 +50,6 @@ func main() {
 	godotenv.Load()
 
 	r := gin.Default()
-
 	err := sentry.Init(sentry.ClientOptions{
 		Dsn:         os.Getenv("SENTRY_DSN"),
 		Environment: gin.Mode(),
