@@ -12,7 +12,7 @@ FROM debian:stable-slim
 WORKDIR /
 
 # Install CA certificates
-RUN apt update && apt add ca-certificates
+RUN apt update && apt install -y ca-certificates
 
 COPY --from=builder /build/api .
 
