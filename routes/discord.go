@@ -61,7 +61,7 @@ func DiscordCallback(c *gin.Context) {
 		ToJSON(&tokenResp).
 		AddValidator(func(res *http.Response) error {
 			err := requests.CheckStatus(http.StatusOK)(res)
-			if requests.HasStatusErr(err, http.StatusBadRequest) {
+			if !requests.HasStatusErr(err, http.StatusOK) {
 				if copyErr := requests.ToString(&errorResp)(res); copyErr != nil {
 					return copyErr
 				}
