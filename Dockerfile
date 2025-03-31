@@ -5,14 +5,16 @@ WORKDIR /app
 COPY . .
 
 RUN go mod tidy && \
-    go build .
+    go build -o api .
 
-FROM alpine:latest AS runner
+FROM debian:stable-slim
 
-WORKDIR /root/
+WORKDIR /
 
 COPY --from=builder /app/api .
 
 EXPOSE 8080
 
-CMD ["./api"]
+ENV GIN_MODE=release
+
+CMD ["/api"]
