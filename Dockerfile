@@ -1,6 +1,6 @@
 FROM golang:1.24 AS builder
 
-WORKDIR /app
+WORKDIR /build
 
 COPY . .
 
@@ -11,9 +11,10 @@ FROM debian:stable-slim
 
 WORKDIR /
 
-COPY --from=builder /app/api .
+# Install CA certificates
+RUN apt update && apt add ca-certificates
 
-EXPOSE 8080
+COPY --from=builder /build/api .
 
 ENV GIN_MODE=release
 
