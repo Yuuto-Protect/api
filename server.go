@@ -49,11 +49,11 @@ func auth(c *gin.Context) {
 func main() {
 	godotenv.Load()
 
-	err := sentry.Init(sentry.ClientOptions{
-		Dsn: os.Getenv("SENTRY_DSN"),
-	})
+	err := sentry.Init(sentry.ClientOptions{Dsn: os.Getenv("SENTRY_DSN")})
 	if err != nil {
 		fmt.Printf("Sentry initialization failed: %v\n", err)
+	} else {
+		fmt.Printf("Sentry loaded")
 	}
 
 	r := gin.Default()
