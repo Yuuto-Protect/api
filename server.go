@@ -56,8 +56,6 @@ func main() {
 	})
 	if err != nil {
 		log.Printf("Sentry initialization failed: %v", err)
-	} else {
-		log.Printf("Sentry loaded. DSN: %s", os.Getenv("SENTRY_DSN"))
 	}
 
 	r.Use(sentrygin.New(sentrygin.Options{

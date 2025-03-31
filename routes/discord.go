@@ -7,7 +7,6 @@ import (
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -49,7 +48,6 @@ func DiscordCallback(c *gin.Context) {
 	body.Set("code", code)
 	body.Set("grant_type", "authorization_code")
 	body.Set("redirect_uri", redirectUri)
-	log.Println(body)
 
 	var tokenResp OAuth2TokenResponse
 	err = requests.
@@ -67,7 +65,7 @@ func DiscordCallback(c *gin.Context) {
 
 	var userResp DiscordUserResponse
 	err = requests.
-		URL("https://discord.com/api/v10/users/@me").
+		URL("https://discord.com/api/users/@me").
 		Bearer(tokenResp.AccessToken).
 		ToJSON(&userResp).
 		Fetch(context.Background())
