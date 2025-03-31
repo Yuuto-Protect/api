@@ -8,6 +8,7 @@ import (
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -68,6 +69,7 @@ func DiscordCallback(c *gin.Context) {
 		}).
 		Fetch(context.Background())
 	if err != nil {
+		log.Println(tokenResp)
 		hub.CaptureException(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Failed to get an OAuth2 token: %s", tokenResp.ErrorDescription)})
 		return
