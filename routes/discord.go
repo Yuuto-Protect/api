@@ -7,7 +7,6 @@ import (
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -51,22 +50,13 @@ func DiscordCallback(c *gin.Context) {
 	body.Set("redirect_uri", redirectUri)
 
 	var tokenResp OAuth2TokenResponse
-	var errorResp string
 	err = requests.
 		URL("https://discord.com/api/oauth2/token").
 		ContentType("application/x-www-form-urlencoded").
 		BasicAuth(clientId, clientSecret).
 		BodyForm(body).
 		ToJSON(&tokenResp).
-		AddValidator(func(res *http.Response) error {
-			err := requests.CheckStatus(http.StatusOK)(res)
-			copyErr := requests.ToString(&errorResp)(res)
-			log.Println(errorResp)
-			if copyErr != nil {
-				return copyErr
-			}
-			return err
-		}).
+		CheckStatus(200).
 		Fetch(context.Background())
 	if err != nil {
 		hub.CaptureException(err)
