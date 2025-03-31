@@ -49,7 +49,6 @@ func auth(c *gin.Context) {
 func main() {
 	godotenv.Load()
 
-	r := gin.Default()
 	err := sentry.Init(sentry.ClientOptions{
 		Dsn:         os.Getenv("SENTRY_DSN"),
 		Environment: gin.Mode(),
@@ -58,9 +57,8 @@ func main() {
 		log.Printf("Sentry initialization failed: %v", err)
 	}
 
-	r.Use(sentrygin.New(sentrygin.Options{
-		WaitForDelivery: false,
-	}))
+	r := gin.Default()
+	r.Use(sentrygin.New(sentrygin.Options{}))
 
 	r.GET("/discord/callback", routes.DiscordCallback)
 
