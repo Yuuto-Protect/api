@@ -52,7 +52,6 @@ func DiscordCallback(c *gin.Context) {
 	var tokenResp OAuth2TokenResponse
 	err = requests.
 		URL("https://discord.com/api/oauth2/token").
-		ContentType("application/x-www-form-urlencoded").
 		BasicAuth(clientId, clientSecret).
 		BodyForm(body).
 		ToJSON(&tokenResp).
