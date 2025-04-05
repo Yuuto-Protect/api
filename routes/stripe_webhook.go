@@ -27,7 +27,7 @@ func createContainer(cli *client.Client, env []string) (string, error) {
 		Image: image,
 		Env:   env,
 	}, &container.HostConfig{
-		NetworkMode: "yuuto_network",
+		NetworkMode: "web",
 		Binds:       []string{"/var/run/docker.sock:/var/run/docker.sock"},
 		// Auto remove the container when it stops
 		AutoRemove: true,
